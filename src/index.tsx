@@ -24,13 +24,11 @@ const theme = createTheme({
 });
 
 const rootElement = document.getElementById("root");
+
 render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={theme}>
-      <SnackbarProvider
-        maxSnack={3}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
+      <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
         <CssBaseline />
         <Title />
         <Info />

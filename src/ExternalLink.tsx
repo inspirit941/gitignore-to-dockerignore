@@ -4,7 +4,7 @@ import { memo } from "react";
 
 export type ExternalLinkProps<
   D extends React.ElementType = LinkTypeMap["defaultComponent"],
-  P = {}
+  P = unknown
 > = LinkProps<D, P>;
 
 export default memo(function ExternalLink(props: ExternalLinkProps) {

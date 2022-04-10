@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import { Button as MuiButton, Tooltip } from "@mui/material";
 import type {
   ButtonTypeMap,
@@ -11,10 +11,7 @@ const cssButton = css`
   font-size: 1.5em;
 `;
 
-export type ButtonProps<
-  D extends React.ElementType = ButtonTypeMap["defaultComponent"],
-  P = {}
-> = MuiButtonProps<D, P> & {
+export type ButtonProps<D extends React.ElementType = ButtonTypeMap["defaultComponent"], P = unknown> = MuiButtonProps<D, P> & {
   tooltip: TooltipProps["title"];
 };
 
