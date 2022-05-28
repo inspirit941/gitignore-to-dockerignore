@@ -105,6 +105,24 @@ export default memo(function Transformer() {
         variant: "error"
       });
   });
+
+  // TODO : test
+  const convert = (() => {
+    const form = new FormData()
+    form.append("file", new Blob([gitignore], {type: 'application/json'}), "Jenkins.txt");
+
+    fetch('/api/v1/upload', {
+      headers: {
+        'accept': 'application/json',
+      },
+      body: form,
+      method: "POST",
+    })
+      .then(response => response.json())
+      .catch(error => console.error('Error:', error))
+      .then(response => console.log('Success:', response));
+    })
+
   const save = useEventCallback(() => {
     saveAs(
       new Blob([dockerignore], { type: "text/plain;charset=utf-8" }),
@@ -132,7 +150,8 @@ export default memo(function Transformer() {
               <Button tooltip="Reset" onClick={reset}>
                 <ArrowCounterClockwise />
               </Button>
-              <Button tooltip="Upload .gitignore" onClick={rootProps.onClick}>
+              {/*<Button tooltip="Upload .gitignore" onClick={rootProps.onClick}>*/}
+              <Button tooltip="Upload .gitignore" onClick={convert}>
                 <UploadSimple />
               </Button>
             </>
