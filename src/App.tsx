@@ -109,7 +109,7 @@ export default memo(function Transformer() {
   // TODO : test
   const convert = (() => {
     const form = new FormData()
-    form.append("file", new Blob([gitignore], {type: 'application/json'}), "Jenkins.txt");
+    form.append("file", new Blob([gitignore], {type: 'text/plain'}), "Jenkins");
 
     fetch('/api/v1/upload', {
       headers: {
