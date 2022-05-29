@@ -122,7 +122,7 @@ export default memo(function Transformer() {
       >
         <input {...getInputProps()} />
         <BlockTitle
-          title=".gitignore"
+          title="Jenkinsfile"
           actions={
             <>
               <FormControlLabel
@@ -132,7 +132,7 @@ export default memo(function Transformer() {
               <Button tooltip="Reset" onClick={reset}>
                 <ArrowCounterClockwise />
               </Button>
-              <Button tooltip="Upload .gitignore" onClick={rootProps.onClick}>
+              <Button tooltip="Upload JenkinsFile" onClick={rootProps.onClick}>
                 <UploadSimple />
               </Button>
             </>
@@ -154,13 +154,13 @@ export default memo(function Transformer() {
       </div>
       <div>
         <BlockTitle
-          title=".dockerignore"
+          title="github-action.yaml"
           actions={
             <>
               <Button tooltip="Copy to clipboard" onClick={copyToClipboard}>
                 <Clipboard />
               </Button>
-              <Button tooltip="Save as .dockerignore" onClick={save}>
+              <Button tooltip="Save as github-action.yaml" onClick={save}>
                 <FloppyDisk />
               </Button>
             </>

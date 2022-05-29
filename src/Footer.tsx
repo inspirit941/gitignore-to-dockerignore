@@ -9,8 +9,9 @@ const cssFooter = css`
   }
 `;
 
+// todo: 레포 페이지 생기면 추가.
 const officialSite = "//vdustr.dev/g2d.js";
-const imgUrl = "//vdustr.dev/g2d.js/img/g2d.svg";
+const imgUrl = "https://user-images.githubusercontent.com/26548454/170813693-43f52bb6-2399-4de3-9b2b-6b788c801ea1.png";
 const authorSite = "//vdustr.dev";
 const licenseUrl = "//github.com/VdustR/g2d.js/blob/main/LICENSE";
 
