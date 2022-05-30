@@ -56,16 +56,43 @@ const cssDropFile = css`
 export default memo(function Transformer() {
   const { enqueueSnackbar } = useSnackbar();
   const [gitignore, setGitignore] = useState(defaultGitIgnore);
-  const [dockerignore, setDockerignore] = useState(() => g2d(gitignore));
+  const [dockerignore, setDockerignore] = useState('');
+  // const [dockerignore, setDockerignore] = useState(() => g2d(gitignore));
   const [readonly, toggleReadonly] = useToggle(false, true, false);
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setDockerignore(g2d(gitignore));
-    }, 300);
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [gitignore]);
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     setDockerignore(g2d(gitignore));
+  //   }, 300);
+  //   return () => {
+  //     clearTimeout(timeout);
+  //   };
+  // }, [gitignore]);
+
+  const setResponse = (str: string | void) => {
+    if (str)
+      setDockerignore(str);
+  }
+  // TODO : test
+  const convert = () => {
+    const form = new FormData()
+    form.append("file", new Blob([gitignore], {type: 'text/plain'}), "Jenkins");
+
+    fetch('/api/v1/upload', {
+      headers: {
+        'accept': 'application/json',
+      },
+      body: form,
+      method: "POST",
+    })
+        .then(response => response.text())
+        .catch(error => console.error('Error:', error))
+        .then(response => {
+          console.log('Success:', response)
+          setResponse(response)
+          return response;
+        });
+  }
+
   const onDrop = useEventCallback<
     Parameters<NonNullable<DropzoneOptions["onDrop"]>>,
     void
@@ -80,6 +107,7 @@ export default memo(function Transformer() {
     enqueueSnackbar("File loaded!", {
       variant: "success"
     });
+    const response = convert();
   });
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -105,23 +133,6 @@ export default memo(function Transformer() {
         variant: "error"
       });
   });
-
-  // TODO : test
-  const convert = (() => {
-    const form = new FormData()
-    form.append("file", new Blob([gitignore], {type: 'text/plain'}), "Jenkins");
-
-    fetch('/api/v1/upload', {
-      headers: {
-        'accept': 'application/json',
-      },
-      body: form,
-      method: "POST",
-    })
-      .then(response => response.json())
-      .catch(error => console.error('Error:', error))
-      .then(response => console.log('Success:', response));
-    })
 
   const save = useEventCallback(() => {
     saveAs(
@@ -150,8 +161,7 @@ export default memo(function Transformer() {
               <Button tooltip="Reset" onClick={reset}>
                 <ArrowCounterClockwise />
               </Button>
-              {/*<Button tooltip="Upload .gitignore" onClick={rootProps.onClick}>*/}
-              <Button tooltip="Upload .gitignore" onClick={convert}>
+              <Button tooltip="Upload .gitignore" onClick={rootProps.onClick}>
                 <UploadSimple />
               </Button>
             </>
