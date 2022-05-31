@@ -73,9 +73,9 @@ export default memo(function Transformer() {
       setDockerignore(str);
   }
   // TODO : test
-  const convert = () => {
+  const convert = (content: string) => {
     const form = new FormData()
-    form.append("file", new Blob([gitignore], {type: 'text/plain'}), "Jenkins");
+    form.append("file", new Blob([content], {type: 'text/plain'}), "Jenkins");
 
     fetch('/api/v1/upload', {
       headers: {
@@ -84,11 +84,11 @@ export default memo(function Transformer() {
       body: form,
       method: "POST",
     })
-        .then(response => response.text())
+        .then(response => response.json())
         .catch(error => console.error('Error:', error))
         .then(response => {
           console.log('Success:', response)
-          setResponse(response)
+          setResponse(response.result)
           return response;
         });
   }
@@ -103,11 +103,11 @@ export default memo(function Transformer() {
       return;
     }
     const content = await file.text();
-    setGitignore(content);
+    await setGitignore(content);
     enqueueSnackbar("File loaded!", {
       variant: "success"
     });
-    const response = convert();
+    const response = convert(content);
   });
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
