@@ -163,7 +163,7 @@ export default memo(function Transformer() {
       >
         <input {...getInputProps()} />
         <BlockTitle
-          title=".gitignore"
+          title="Jenkinsfile"
           actions={
             <>
               <FormControlLabel
@@ -195,7 +195,7 @@ export default memo(function Transformer() {
       </div>
       <div>
         <BlockTitle
-          title=".dockerignore"
+          title="github-action.yaml"
           actions={
             <>
               <Button tooltip="Copy to clipboard" onClick={copyToClipboard}>
