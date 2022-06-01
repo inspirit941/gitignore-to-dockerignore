@@ -7,7 +7,7 @@ import copy from "copy-to-clipboard";
 import { saveAs } from "file-saver";
 import { useSnackbar } from "notistack";
 import {
-  ArrowCounterClockwise,
+  ArrowRight,
   Clipboard,
   FloppyDisk,
   UploadSimple
@@ -56,16 +56,48 @@ const cssDropFile = css`
 export default memo(function Transformer() {
   const { enqueueSnackbar } = useSnackbar();
   const [gitignore, setGitignore] = useState(defaultGitIgnore);
-  const [dockerignore, setDockerignore] = useState(() => g2d(gitignore));
+  const [dockerignore, setDockerignore] = useState('');
+  // const [dockerignore, setDockerignore] = useState(() => g2d(gitignore));
   const [readonly, toggleReadonly] = useToggle(false, true, false);
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setDockerignore(g2d(gitignore));
-    }, 300);
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [gitignore]);
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     setDockerignore(g2d(gitignore));
+  //   }, 300);
+  //   return () => {
+  //     clearTimeout(timeout);
+  //   };
+  // }, [gitignore]);
+
+  const setResponse = (str: string | void) => {
+    if (!str) {
+      enqueueSnackbar("Invalid Request !!", { variant: "error" });
+      setDockerignore('');
+      return;
+    }
+    enqueueSnackbar("Converting Success", { variant: "success" });
+    setDockerignore(str);
+  }
+  // TODO : test
+  const convert = (content: string) => {
+    const form = new FormData()
+    form.append("file", new Blob([content], {type: 'text/plain'}), "Jenkins");
+
+    fetch('/api/v1/upload', {
+      headers: {
+        'accept': 'application/json',
+      },
+      body: form,
+      method: "POST",
+    })
+        .then(response => response.json())
+        .catch(error => console.error('Error:', error))
+        .then(response => {
+          console.log('Success:', response)
+          setResponse(response.result)
+          return response;
+        });
+  }
+
   const onDrop = useEventCallback<
     Parameters<NonNullable<DropzoneOptions["onDrop"]>>,
     void
@@ -76,10 +108,11 @@ export default memo(function Transformer() {
       return;
     }
     const content = await file.text();
-    setGitignore(content);
-    enqueueSnackbar("File loaded!", {
-      variant: "success"
-    });
+    await setGitignore(content);
+    // enqueueSnackbar("File loaded!", {
+    //   variant: "success"
+    // });
+    const response = convert(content);
   });
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -92,6 +125,13 @@ export default memo(function Transformer() {
       variant: "success"
     });
   });
+  const convertByEditor = useEventCallback(() => {
+    convert(gitignore);
+    // enqueueSnackbar("Reset!", {
+    //   variant: "success"
+    // });
+  });
+
   // don't memo it
   const rootProps = getRootProps();
   const copyToClipboard = useEventCallback(() => {
@@ -105,10 +145,11 @@ export default memo(function Transformer() {
         variant: "error"
       });
   });
+
   const save = useEventCallback(() => {
     saveAs(
-      new Blob([dockerignore], { type: "text/plain;charset=utf-8" }),
-      ".dockerignore"
+      new Blob([dockerignore]),
+      "github-action.yaml"
     );
     enqueueSnackbar("File saving...", {
       variant: "info"
@@ -122,17 +163,17 @@ export default memo(function Transformer() {
       >
         <input {...getInputProps()} />
         <BlockTitle
-          title=".gitignore"
+          title="Jenkinsfile"
           actions={
             <>
               <FormControlLabel
                 control={<Switch value={readonly} onClick={toggleReadonly} />}
                 label="Readonly"
               />
-              <Button tooltip="Reset" onClick={reset}>
-                <ArrowCounterClockwise />
+              <Button tooltip="Convert JenkinsFile" onClick={convertByEditor}>
+                <ArrowRight />
               </Button>
-              <Button tooltip="Upload .gitignore" onClick={rootProps.onClick}>
+              <Button tooltip="Upload JenkinsFile" onClick={rootProps.onClick}>
                 <UploadSimple />
               </Button>
             </>
@@ -154,13 +195,13 @@ export default memo(function Transformer() {
       </div>
       <div>
         <BlockTitle
-          title=".dockerignore"
+          title="github-action.yaml"
           actions={
             <>
               <Button tooltip="Copy to clipboard" onClick={copyToClipboard}>
                 <Clipboard />
               </Button>
-              <Button tooltip="Save as .dockerignore" onClick={save}>
+              <Button tooltip="Save as github-action.yaml" onClick={save}>
                 <FloppyDisk />
               </Button>
             </>
