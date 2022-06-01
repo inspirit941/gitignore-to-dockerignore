@@ -7,7 +7,7 @@ import copy from "copy-to-clipboard";
 import { saveAs } from "file-saver";
 import { useSnackbar } from "notistack";
 import {
-  ArrowCounterClockwise,
+  ArrowRight,
   Clipboard,
   FloppyDisk,
   UploadSimple
@@ -69,8 +69,13 @@ export default memo(function Transformer() {
   // }, [gitignore]);
 
   const setResponse = (str: string | void) => {
-    if (str)
-      setDockerignore(str);
+    if (!str) {
+      enqueueSnackbar("Invalid Request !!", { variant: "error" });
+      setDockerignore('');
+      return;
+    }
+    enqueueSnackbar("Converting Success", { variant: "success" });
+    setDockerignore(str);
   }
   // TODO : test
   const convert = (content: string) => {
@@ -104,9 +109,9 @@ export default memo(function Transformer() {
     }
     const content = await file.text();
     await setGitignore(content);
-    enqueueSnackbar("File loaded!", {
-      variant: "success"
-    });
+    // enqueueSnackbar("File loaded!", {
+    //   variant: "success"
+    // });
     const response = convert(content);
   });
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -120,6 +125,13 @@ export default memo(function Transformer() {
       variant: "success"
     });
   });
+  const convertByEditor = useEventCallback(() => {
+    convert(gitignore);
+    // enqueueSnackbar("Reset!", {
+    //   variant: "success"
+    // });
+  });
+
   // don't memo it
   const rootProps = getRootProps();
   const copyToClipboard = useEventCallback(() => {
@@ -136,8 +148,8 @@ export default memo(function Transformer() {
 
   const save = useEventCallback(() => {
     saveAs(
-      new Blob([dockerignore], { type: "text/plain;charset=utf-8" }),
-      ".dockerignore"
+      new Blob([dockerignore]),
+      "github-action.yaml"
     );
     enqueueSnackbar("File saving...", {
       variant: "info"
@@ -158,10 +170,10 @@ export default memo(function Transformer() {
                 control={<Switch value={readonly} onClick={toggleReadonly} />}
                 label="Readonly"
               />
-              <Button tooltip="Reset" onClick={reset}>
-                <ArrowCounterClockwise />
+              <Button tooltip="Convert JenkinsFile" onClick={convertByEditor}>
+                <ArrowRight />
               </Button>
-              <Button tooltip="Upload .gitignore" onClick={rootProps.onClick}>
+              <Button tooltip="Upload JenkinsFile" onClick={rootProps.onClick}>
                 <UploadSimple />
               </Button>
             </>
@@ -189,7 +201,7 @@ export default memo(function Transformer() {
               <Button tooltip="Copy to clipboard" onClick={copyToClipboard}>
                 <Clipboard />
               </Button>
-              <Button tooltip="Save as .dockerignore" onClick={save}>
+              <Button tooltip="Save as github-action.yaml" onClick={save}>
                 <FloppyDisk />
               </Button>
             </>
