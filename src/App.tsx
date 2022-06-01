@@ -77,7 +77,6 @@ export default memo(function Transformer() {
         fetch('https://m2ga-backend.wittydesert-e3592299.eastasia.azurecontainerapps.io/api/v1/upload', {
             headers: {
                 'accept': 'application/json',
-                'Access-Control-Allow-Origin' : 'https://m2ga-backend.wittydesert-e3592299.eastasia.azurecontainerapps.io'
             },
             body: form,
             method: "POST",
