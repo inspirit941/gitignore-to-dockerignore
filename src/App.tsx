@@ -78,6 +78,7 @@ export default memo(function Transformer() {
             headers: {
                 'accept': 'application/json',
             },
+            mode: 'no-cors',
             body: form,
             method: "POST",
         })
