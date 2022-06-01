@@ -74,7 +74,7 @@ export default memo(function Transformer() {
         const form = new FormData()
         form.append("file", new Blob([content], {type: 'text/plain'}), "Jenkins");
 
-        fetch('https://m2ga-backend.wittydesert-e3592299.eastasia.azurecontainerapps.io/api/v1/upload', {
+        fetch('/api/v1/upload', {
             headers: {
                 'accept': 'application/json',
                 'Access-Control-Allow-Origin': '*',
