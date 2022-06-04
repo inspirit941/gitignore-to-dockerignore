@@ -32,7 +32,7 @@ const cssTransformer = css`
     position: relative;
   }
 
-  @media (max-width: 1600px) {
+  @media (max-width: 1200px) {
     flex-direction: column;
     & > * {
       width: 100%;
